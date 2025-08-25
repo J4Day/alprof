@@ -36,9 +36,9 @@
 <section class="hero-bg min-h-[80vh] flex items-center">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="text-center">
-            <h1 class="text-4xl md:text-6xl font-bold text-gray-900 mb-6">
+            <h1 class="hero-title text-4xl md:text-6xl text-gray-900 mb-6">
                 Алюминиевые окна,<br>
-                <span class="gradient-text">двери, витражи</span>
+                <span class="hero-title-accent gradient-text">двери, витражи</span>
             </h1>
             <p class="text-xl text-gray-600 mb-8 max-w-3xl mx-auto leading-relaxed">
                 Крупнейший производитель алюминиевых систем высокого качества.
@@ -223,45 +223,63 @@
             <div class="w-20 h-1 mx-auto" style="background-color: var(--orange-primary);"></div>
         </div>
 
-        <div class="grid md:grid-cols-3 lg:grid-cols-5 gap-8">
-            <div class="rounded-3xl p-8 text-center relative" style="background-color: var(--orange-lighter);">
-                <div class="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-6 text-white font-bold text-xl" style="background-color: var(--orange-primary);">1</div>
-                <div class="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4" style="background-color: rgba(255, 255, 255, 0.8);">
-                    <i data-lucide="send" class="w-8 h-8" style="color: var(--orange-primary);"></i>
+        <!-- First Row -->
+        <div class="grid md:grid-cols-3 gap-8 mb-12">
+            <div class="text-center relative">
+                <div class="w-20 h-20 rounded-full flex items-center justify-center mx-auto text-white font-bold text-2xl relative z-10 -mb-10" style="background-color: var(--orange-primary);">1</div>
+                <div class="rounded-3xl p-8 pt-16 relative" style="background-color: var(--orange-lighter);">
+                    <img src="images/block/samolet.png" style="width: 80px; margin: 0 auto" alt="">
+                    <br>
+                    <h3 class="text-lg font-semibold text-gray-900 mb-2">Оставляете заявку</h3>
+                    <p class="text-gray-600 text-sm">Свяжитесь с нами удобным способом</p>
                 </div>
-                <h3 class="text-base font-semibold text-gray-900 mb-2">Оставляете заявку</h3>
             </div>
 
-            <div class="rounded-3xl p-8 text-center relative" style="background-color: var(--orange-lighter);">
-                <div class="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-6 text-white font-bold text-xl" style="background-color: var(--orange-primary);">2</div>
-                <div class="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4" style="background-color: rgba(255, 255, 255, 0.8);">
-                    <i data-lucide="ruler" class="w-8 h-8" style="color: var(--orange-primary);"></i>
+            <div class="text-center relative">
+                <div class="w-20 h-20 rounded-full flex items-center justify-center mx-auto text-white font-bold text-2xl relative z-10 -mb-10" style="background-color: var(--orange-primary);">2</div>
+                <div class="rounded-3xl p-8 pt-16 relative" style="background-color: var(--orange-lighter);">
+                    <img src="images/block/ruletka.png" style="width: 80px; margin: 0 auto" alt="">
+                    <br>
+                    <h3 class="text-lg font-semibold text-gray-900 mb-2">Выезд замерщика</h3>
+                    <p class="text-gray-600 text-sm">Точные измерения и консультация</p>
                 </div>
-                <h3 class="text-base font-semibold text-gray-900 mb-2">Выезд замерщика</h3>
             </div>
 
-            <div class="rounded-3xl p-8 text-center relative" style="background-color: var(--orange-lighter);">
-                <div class="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-6 text-white font-bold text-xl" style="background-color: var(--orange-primary);">3</div>
-                <div class="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4" style="background-color: rgba(255, 255, 255, 0.8);">
-                    <i data-lucide="file-signature" class="w-8 h-8" style="color: var(--orange-primary);"></i>
+            <div class="text-center relative">
+                <div class="w-20 h-20 rounded-full flex items-center justify-center mx-auto text-white font-bold text-2xl relative z-10 -mb-10" style="background-color: var(--orange-primary);">3</div>
+                <div class="rounded-3xl p-8 pt-16 relative" style="background-color: var(--orange-lighter);">
+                    <img src="images/block/dogovor.png" style="width: 100px; margin: 0 auto" alt="">
+                    <br>
+                    <h3 class="text-lg font-semibold text-gray-900 mb-2">Подписываем договор</h3>
+                    <p class="text-gray-600 text-sm">Фиксируем все условия работы</p>
                 </div>
-                <h3 class="text-base font-semibold text-gray-900 mb-2">Подписываем договор</h3>
+            </div>
+        </div>
+
+        <!-- Second Row -->
+        <div class="grid md:grid-cols-3 gap-8">
+            <div class="text-center relative">
+                <div class="w-20 h-20 rounded-full flex items-center justify-center mx-auto text-white font-bold text-2xl relative z-10 -mb-10" style="background-color: var(--orange-primary);">4</div>
+                <div class="rounded-3xl p-8 pt-16 relative" style="background-color: var(--orange-lighter);">
+                    <img src="images/block/stanok.png" style="width: 130px; margin: 0 auto" alt="">
+                    <br>
+                    <h3 class="text-lg font-semibold text-gray-900 mb-2">Изготовление заказа</h3>
+                    <p class="text-gray-600 text-sm">Производство на современном оборудовании</p>
+                </div>
             </div>
 
-            <div class="rounded-3xl p-8 text-center relative" style="background-color: var(--orange-lighter);">
-                <div class="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-6 text-white font-bold text-xl" style="background-color: var(--orange-primary);">4</div>
-                <div class="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4" style="background-color: rgba(255, 255, 255, 0.8);">
-                    <i data-lucide="settings" class="w-8 h-8" style="color: var(--orange-primary);"></i>
+            <div class="text-center relative">
+                <div class="w-20 h-20 rounded-full flex items-center justify-center mx-auto text-white font-bold text-2xl relative z-10 -mb-10" style="background-color: var(--orange-primary);">5</div>
+                <div class="rounded-3xl p-8 pt-16 relative" style="background-color: var(--orange-lighter);">
+                    <img src="images/block/okna.png" style="width: 120px; margin: 0 auto" alt="">
+                    <br>
+                    <h3 class="text-lg font-semibold text-gray-900 mb-2">Контроль качества</h3>
+                    <p class="text-gray-600 text-sm">Проверка готовой продукции</p>
                 </div>
-                <h3 class="text-base font-semibold text-gray-900 mb-2">Изготовление заказа</h3>
             </div>
 
-            <div class="rounded-3xl p-8 text-center relative" style="background-color: var(--orange-lighter);">
-                <div class="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-6 text-white font-bold text-xl" style="background-color: var(--orange-primary);">5</div>
-                <div class="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4" style="background-color: rgba(255, 255, 255, 0.8);">
-                    <i data-lucide="truck" class="w-8 h-8" style="color: var(--orange-primary);"></i>
-                </div>
-                <h3 class="text-base font-semibold text-gray-900 mb-2">Доставка и монтаж</h3>
+            <div class="text-center relative">
+                <img src="images/block/bus.png" style="padding-top: 50px; width: 80%; margin: auto auto;" alt="">
             </div>
         </div>
     </div>
@@ -271,11 +289,10 @@
 <section class="py-20 bg-white">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="text-center mb-16">
-            <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Покраска под любой <span style="color: var(--orange-primary);">RAL цвет</span></h2>
+            <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Покраска под любой</h2>
             <div class="w-20 h-1 mx-auto mb-6" style="background-color: var(--orange-primary);"></div>
             <p class="text-gray-600 max-w-3xl mx-auto">
-                Мы предлагаем профессиональную покраску всех алюминиевых изделий в любой цвет по стандарту RAL. 
-                Высококачественное порошковое покрытие обеспечивает долговечность и устойчивость к погодным условиям.
+                Мы предлагаем профессиональную покраску всех алюминиевых изделий в любой цвет.
             </p>
         </div>
 
@@ -289,7 +306,7 @@
                         <div>
                             <h3 class="text-lg font-semibold text-gray-900 mb-2">Широкая цветовая палитра</h3>
                             <p class="text-gray-600 text-sm">
-                                Более 200 стандартных цветов RAL. От классических до современных оттенков — найдем идеальный цвет для вашего проекта.
+                                Более 200 стандартных цветов. От классических до современных оттенков — найдем идеальный цвет для вашего проекта.
                             </p>
                         </div>
                     </div>
@@ -323,10 +340,6 @@
             <div class="text-center">
                 <div class="bg-gray-50 rounded-xl p-8">
                     <img src="images/ral.jpg" alt="RAL Color Chart Palette" class="w-full h-64 object-cover rounded-lg mb-6">
-                    <h4 class="text-lg font-semibold text-gray-900 mb-2">Стандарт RAL</h4>
-                    <p class="text-gray-600 text-sm">
-                        Используем только сертифицированные краски по международному стандарту RAL для точного соответствия цвета.
-                    </p>
                 </div>
             </div>
         </div>
