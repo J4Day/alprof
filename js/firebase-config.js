@@ -24,7 +24,7 @@ firebase.initializeApp(firebaseConfig);
 
 // Initialize services
 const db = firebase.firestore();
-const auth = firebase.auth();
+const auth = firebase.auth ? firebase.auth() : null;
 
 // Firebase Database Manager
 class FirebaseManager {
@@ -231,7 +231,7 @@ class FirebaseManager {
     async uploadImage(file, folder = 'images') {
         try {
             // Check if user is authenticated
-            if (!auth.currentUser) {
+            if (auth && !auth.currentUser) {
                 throw new Error('Необходима авторизация для загрузки изображений');
             }
 
@@ -360,6 +360,7 @@ class FirebaseManager {
 
     // Authentication methods
     async signInWithEmail(email, password) {
+        if (!auth) throw new Error('Firebase Auth не инициализирован');
         try {
             const userCredential = await auth.signInWithEmailAndPassword(email, password);
             return userCredential.user;
@@ -370,6 +371,7 @@ class FirebaseManager {
     }
 
     async signOut() {
+        if (!auth) throw new Error('Firebase Auth не инициализирован');
         try {
             await auth.signOut();
         } catch (error) {
@@ -379,10 +381,14 @@ class FirebaseManager {
     }
 
     getCurrentUser() {
-        return auth.currentUser;
+        return auth ? auth.currentUser : null;
     }
 
     onAuthStateChanged(callback) {
+        if (!auth) {
+            callback(null);
+            return () => {};
+        }
         return auth.onAuthStateChanged(callback);
     }
 
@@ -434,3 +440,67 @@ class FirebaseManager {
 
 // Initialize Firebase Manager
 window.firebaseManager = new FirebaseManager();
+
+// Contacts loader for public pages
+class PublicContactsLoader {
+    constructor() {
+        this.contactsDoc = db.collection('settings').doc('contacts');
+        this.defaultContacts = {
+            phone: '+996 (555) 555-555',
+            email: 'info@bishtrade.kz', 
+            address: 'г. Бишкек, ул. Примерная, 123',
+            hours: 'Пн-Пт: 9:00-18:00, Сб: 10:00-16:00'
+        };
+    }
+
+    async loadContacts() {
+        try {
+            const doc = await this.contactsDoc.get();
+            if (doc.exists) {
+                return doc.data();
+            } else {
+                return this.defaultContacts;
+            }
+        } catch (error) {
+            console.log('Using default contacts due to:', error.message);
+            return this.defaultContacts;
+        }
+    }
+
+    async updateContactsInPage() {
+        const contacts = await this.loadContacts();
+        
+        // Update phone elements
+        const phoneElements = document.querySelectorAll('[data-contact="phone"]');
+        phoneElements.forEach(el => {
+            if (el.tagName === 'A') {
+                el.href = `tel:${contacts.phone}`;
+                el.querySelector('span').textContent = contacts.phone;
+            } else {
+                el.textContent = contacts.phone;
+            }
+        });
+        
+        // Update email elements  
+        const emailElements = document.querySelectorAll('[data-contact="email"]');
+        emailElements.forEach(el => {
+            if (el.tagName === 'A') {
+                el.href = `mailto:${contacts.email}`;
+                el.querySelector('span').textContent = contacts.email;
+            } else {
+                el.textContent = contacts.email;
+            }
+        });
+        
+        // Update address elements
+        const addressElements = document.querySelectorAll('[data-contact="address"]');
+        addressElements.forEach(el => el.textContent = contacts.address);
+        
+        // Update hours elements
+        const hoursElements = document.querySelectorAll('[data-contact="hours"]');
+        hoursElements.forEach(el => el.textContent = contacts.hours);
+    }
+}
+
+// Initialize public contacts loader
+window.contactsLoader = new PublicContactsLoader();

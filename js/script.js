@@ -37,3 +37,14 @@ document.querySelectorAll('.card-shadow').forEach(card => {
     card.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
     observer.observe(card);
 });
+
+// Load contacts from Firebase when page loads
+document.addEventListener('DOMContentLoaded', async () => {
+    if (window.contactsLoader) {
+        try {
+            await window.contactsLoader.updateContactsInPage();
+        } catch (error) {
+            console.log('Could not load contacts from Firebase:', error.message);
+        }
+    }
+});

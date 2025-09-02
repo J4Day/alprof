@@ -359,7 +359,12 @@ class AdminPanelManager {
         const isEdit = !!service;
         this.showModal(`
             <div class="p-6">
-                <h3 class="text-lg font-semibold text-gray-900 mb-4">${isEdit ? 'Редактировать категорию' : 'Добавить категорию'}</h3>
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-lg font-semibold text-gray-900">${isEdit ? 'Редактировать категорию' : 'Добавить категорию'}</h3>
+                    <button onclick="this.closest('.modal-overlay').remove()" class="text-gray-400 hover:text-gray-600 p-1 rounded-lg hover:bg-gray-100 transition-colors duration-200">
+                        <i data-lucide="x" class="w-5 h-5"></i>
+                    </button>
+                </div>
                 <form id="service-form" class="space-y-4">
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">Название</label>
@@ -444,7 +449,12 @@ class AdminPanelManager {
         const isEdit = !!product;
         this.showModal(`
             <div class="p-6 max-h-[80vh] overflow-y-auto">
-                <h3 class="text-lg font-semibold text-gray-900 mb-4">${isEdit ? 'Редактировать товар' : 'Добавить товар'}</h3>
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-lg font-semibold text-gray-900">${isEdit ? 'Редактировать товар' : 'Добавить товар'}</h3>
+                    <button onclick="this.closest('.modal-overlay').remove()" class="text-gray-400 hover:text-gray-600 p-1 rounded-lg hover:bg-gray-100 transition-colors duration-200">
+                        <i data-lucide="x" class="w-5 h-5"></i>
+                    </button>
+                </div>
                 <form id="product-form" class="space-y-4">
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">Категория</label>
@@ -712,9 +722,10 @@ class AdminPanelManager {
         
         if (callback) callback();
 
-        modal.addEventListener('click', (e) => {
-            if (e.target === modal) modal.remove();
-        });
+        // Remove the click outside to close functionality
+        // modal.addEventListener('click', (e) => {
+        //     if (e.target === modal) modal.remove();
+        // });
     }
 
     showSuccess(message) {
