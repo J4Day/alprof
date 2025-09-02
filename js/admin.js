@@ -88,15 +88,20 @@ class AdminPanelManager {
         try {
             this.showLoading(true);
             
-            // Load services
-            this.services = await firebaseManager.getServices();
-            this.renderServices();
-            this.populateCategoryFilter();
+            // Load services and products simultaneously
+            const [services, products] = await Promise.all([
+                firebaseManager.getServices(),
+                firebaseManager.getProducts()
+            ]);
             
-            // Load products
-            this.products = await firebaseManager.getProducts();
+            this.services = services;
+            this.products = products;
             this.filteredProducts = [...this.products];
+            
+            // Render everything after both are loaded
+            this.renderServices();
             this.renderProducts();
+            this.populateCategoryFilter();
             
             // Load contacts
             await this.loadContactsData();
@@ -267,30 +272,43 @@ class AdminPanelManager {
             return;
         }
 
-        container.innerHTML = this.services.map(service => `
-            <div class="border border-gray-200 rounded-lg p-4 hover:border-orange-300 transition-colors duration-200">
-                <div class="flex items-center justify-between">
-                    <div class="flex items-center space-x-4">
-                        <img src="${service.image}" alt="${service.name}" class="w-16 h-16 object-cover rounded-lg" onerror="this.src='https://via.placeholder.com/64x64?text=No+Image'">
-                        <div>
-                            <h3 class="font-semibold text-gray-900">${service.name}</h3>
-                            <p class="text-sm text-gray-600 mt-1">${service.description}</p>
-                            <span class="text-xs text-gray-500">Товаров: ${this.products.filter(p => p.categoryId === service.id).length}</span>
+        container.innerHTML = this.services.map(service => {
+            const productCount = this.products.filter(p => p.categoryId === service.id).length;
+            return `
+                <div class="border border-gray-200 rounded-lg p-4 hover:border-orange-300 transition-colors duration-200">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-4">
+                            <img src="${service.image}" alt="${service.name}" class="w-16 h-16 object-cover rounded-lg" onerror="this.src='https://via.placeholder.com/64x64?text=No+Image'">
+                            <div>
+                                <h3 class="font-semibold text-gray-900">${service.name}</h3>
+                                <p class="text-sm text-gray-600 mt-1">${service.description}</p>
+                                <span class="text-xs text-gray-500" data-product-count="${service.id}">Товаров: ${productCount}</span>
+                            </div>
+                        </div>
+                        <div class="flex space-x-2">
+                            <button onclick="adminManager.editService('${service.id}')" class="text-blue-600 hover:text-blue-700 p-2 rounded-lg hover:bg-blue-50 transition-colors duration-200">
+                                <i data-lucide="edit" class="w-4 h-4"></i>
+                            </button>
+                            <button onclick="adminManager.deleteService('${service.id}')" class="text-red-600 hover:text-red-700 p-2 rounded-lg hover:bg-red-50 transition-colors duration-200">
+                                <i data-lucide="trash-2" class="w-4 h-4"></i>
+                            </button>
                         </div>
                     </div>
-                    <div class="flex space-x-2">
-                        <button onclick="adminManager.editService('${service.id}')" class="text-blue-600 hover:text-blue-700 p-2 rounded-lg hover:bg-blue-50 transition-colors duration-200">
-                            <i data-lucide="edit" class="w-4 h-4"></i>
-                        </button>
-                        <button onclick="adminManager.deleteService('${service.id}')" class="text-red-600 hover:text-red-700 p-2 rounded-lg hover:bg-red-50 transition-colors duration-200">
-                            <i data-lucide="trash-2" class="w-4 h-4"></i>
-                        </button>
-                    </div>
                 </div>
-            </div>
-        `).join('');
+            `;
+        }).join('');
 
         lucide.createIcons();
+    }
+
+    updateProductCounts() {
+        this.services.forEach(service => {
+            const countElement = document.querySelector(`[data-product-count="${service.id}"]`);
+            if (countElement) {
+                const productCount = this.products.filter(p => p.categoryId === service.id).length;
+                countElement.textContent = `Товаров: ${productCount}`;
+            }
+        });
     }
 
     renderProducts() {
@@ -633,14 +651,26 @@ class AdminPanelManager {
             };
             
             if (existingProduct) {
-                await firebaseManager.updateProduct(existingProduct.id, productData);
+                const updatedProduct = await firebaseManager.updateProduct(existingProduct.id, productData);
+                // Update local data
+                const index = this.products.findIndex(p => p.id === existingProduct.id);
+                if (index !== -1) {
+                    this.products[index] = updatedProduct;
+                    this.filteredProducts = [...this.products];
+                }
                 this.showSuccess('Товар успешно обновлен');
             } else {
-                await firebaseManager.addProduct(productData);
+                const newProduct = await firebaseManager.addProduct(productData);
+                // Add to local data
+                this.products.push(newProduct);
+                this.filteredProducts = [...this.products];
                 this.showSuccess('Товар успешно добавлен');
             }
             
-            await this.loadData();
+            // Re-render only what's needed
+            this.renderProducts();
+            this.updateProductCounts();
+            this.populateCategoryFilter();
             document.querySelector('.modal-overlay').remove();
             
         } catch (error) {
@@ -695,8 +725,17 @@ class AdminPanelManager {
             try {
                 this.showLoading(true);
                 await firebaseManager.deleteProduct(productId);
+                
+                // Remove from local data
+                this.products = this.products.filter(p => p.id !== productId);
+                this.filteredProducts = this.filteredProducts.filter(p => p.id !== productId);
+                
+                // Re-render only what's needed
+                this.renderProducts();
+                this.updateProductCounts();
+                this.populateCategoryFilter();
+                
                 this.showSuccess('Товар успешно удален');
-                await this.loadData();
             } catch (error) {
                 console.error('Error deleting product:', error);
                 this.showError('Ошибка при удалении товара');
