@@ -163,7 +163,7 @@ class CatalogManager {
 
     createServiceCard(service) {
         return `
-            <div id="service-${service.id}" class="group bg-white rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 hover:transform hover:-translate-y-2 overflow-hidden cursor-pointer border border-gray-100 hover:border-orange-200" onclick="catalogManager.showServiceDetails(${service.id})">
+            <div id="service-${service.id}" class="group bg-white rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 hover:transform hover:-translate-y-2 overflow-hidden cursor-pointer border border-gray-100 hover:border-orange-200" onclick="catalogManager.showServiceDetails('${service.id}')">
                 <div class="relative overflow-hidden">
                     <div class="h-48 bg-cover bg-center transform group-hover:scale-105 transition-transform duration-500" style="background-image: url('${service.image}')"></div>
                     <div class="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
@@ -212,7 +212,7 @@ class CatalogManager {
 
     // Добавим метод для показа деталей сервиса (если нужен)
     showServiceDetails(serviceId) {
-        const service = this.services.find(s => s.id === serviceId.toString());
+        const service = this.services.find(s => s.id === serviceId);
         if (service) {
             // Здесь можно добавить логику показа модального окна или перехода на страницу товара
             console.log('Показываем детали для:', service);
