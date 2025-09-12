@@ -304,10 +304,10 @@ class CatalogPageManager {
                         <div class="w-24 h-24 bg-cover bg-center rounded-xl mx-auto mb-4 shadow-lg" style="background-image: url('${product.image}')"></div>
                         <h3 class="text-2xl font-bold text-gray-900 mb-2">${product.name}</h3>
                         <p class="text-orange-600 text-xl font-semibold">${product.price}</p>
-                        ${product.inStock 
-                            ? '<span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800 mt-2">В наличии</span>'
-                            : '<span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-red-100 text-red-800 mt-2">Под заказ</span>'
-                        }
+                        ${product.inStock
+                ? '<span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800 mt-2">В наличии</span>'
+                : '<span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-red-100 text-red-800 mt-2">Под заказ</span>'
+            }
                     </div>
                     
                     <div class="mb-6">
@@ -398,7 +398,7 @@ class CatalogPageManager {
 
         document.body.appendChild(modal);
         lucide.createIcons();
-        
+
         // Update contacts in the modal
         if (window.contactsLoader) {
             window.contactsLoader.updateContactsInPage().catch(error => {

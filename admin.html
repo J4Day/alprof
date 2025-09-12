@@ -92,6 +92,9 @@
                     <button id="contacts-tab" class="py-4 px-1 border-b-2 font-medium text-sm tab-button">
                         Контактные данные
                     </button>
+                    <button id="partners-tab" class="py-4 px-1 border-b-2 font-medium text-sm tab-button">
+                        Партнеры
+                    </button>
                 </nav>
             </div>
         </div>
@@ -186,6 +189,26 @@
                     
                     <div id="contacts-status" class="mt-4 hidden">
                         <!-- Status messages will appear here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Partners Management -->
+        <div id="partners-section" class="tab-content hidden">
+            <div class="bg-white rounded-lg shadow-sm">
+                <div class="p-6 border-b border-gray-200">
+                    <div class="flex justify-between items-center">
+                        <h2 class="text-lg font-semibold text-gray-900">Управление партнерами</h2>
+                        <button id="add-partner-btn" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm transition-colors duration-200 flex items-center space-x-2">
+                            <i data-lucide="plus" class="w-4 h-4"></i>
+                            <span>Добавить партнера</span>
+                        </button>
+                    </div>
+                </div>
+                <div class="p-6">
+                    <div id="partners-list" class="space-y-4">
+                        <!-- Partners will be loaded here -->
                     </div>
                 </div>
             </div>

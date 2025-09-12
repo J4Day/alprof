@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Алюминиевые окна, двери, витражи</title>
+    <title>Алюминиевые окна, двери, фасадные профили</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
     <link rel="stylesheet" href="css/styles.css">
@@ -16,17 +16,45 @@
             <div class="flex-shrink-0">
                 <h1 class="text-2xl font-bold gradient-text"><img src="images/logo.png" style="width: 200px; height: 100px"> </h1>
             </div>
-            <div class="hidden md:block">
-                <div class="flex items-center space-x-8 text-sm text-gray-600">
-                    <div class="flex items-center space-x-2">
-                        <i data-lucide="phone" class="w-4 h-4"></i>
-                        <span>+996 (555) 555-555</span>
-                    </div>
-                    <div class="flex items-center space-x-2">
-                        <i data-lucide="clock" class="w-4 h-4"></i>
-                        <span>Пн-Пт: 9:00-18:00</span>
+            <div class="hidden lg:flex items-center space-x-8">
+                <nav class="flex space-x-6">
+                    <a href="catalog.html" class="text-gray-700 hover:text-orange-600 transition-colors duration-200 text-sm font-medium">Каталог</a>
+                    <a href="#process" class="text-gray-700 hover:text-orange-600 transition-colors duration-200 text-sm font-medium">Этапы работы</a>
+                    <a href="#partners" class="text-gray-700 hover:text-orange-600 transition-colors duration-200 text-sm font-medium">Партнеры</a>
+                    <a href="#works" class="text-gray-700 hover:text-orange-600 transition-colors duration-200 text-sm font-medium">Наши работы</a>
+                    <a href="#contact" class="text-gray-700 hover:text-orange-600 transition-colors duration-200 text-sm font-medium">Контакты</a>
+                </nav>
+            </div>
+            <div class="flex items-center space-x-4">
+                <div class="hidden md:block">
+                    <div class="flex items-center space-x-8 text-sm text-gray-600">
+                        <div class="flex items-center space-x-2">
+                            <i data-lucide="phone" class="w-4 h-4"></i>
+                            <span>+996 (555) 555-555</span>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <i data-lucide="clock" class="w-4 h-4"></i>
+                            <span>Пн-Пт: 9:00-18:00</span>
+                        </div>
                     </div>
                 </div>
+                <!-- Mobile menu button -->
+                <div class="lg:hidden">
+                    <button id="mobile-menu-button" class="p-2 rounded-md text-gray-600 hover:text-orange-600 hover:bg-gray-100 transition-colors duration-200">
+                        <i data-lucide="menu" class="w-6 h-6"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Mobile menu -->
+        <div id="mobile-menu" class="lg:hidden hidden border-t border-gray-200">
+            <div class="px-4 pt-2 pb-3 space-y-1">
+                <a href="catalog.html" class="block px-3 py-2 text-gray-700 hover:text-orange-600 hover:bg-gray-50 rounded-md transition-colors duration-200">Каталог</a>
+                <a href="#process" class="block px-3 py-2 text-gray-700 hover:text-orange-600 hover:bg-gray-50 rounded-md transition-colors duration-200">Этапы работы</a>
+                <a href="#partners" class="block px-3 py-2 text-gray-700 hover:text-orange-600 hover:bg-gray-50 rounded-md transition-colors duration-200">Партнеры</a>
+                <a href="#works" class="block px-3 py-2 text-gray-700 hover:text-orange-600 hover:bg-gray-50 rounded-md transition-colors duration-200">Наши работы</a>
+                <a href="#contact" class="block px-3 py-2 text-gray-700 hover:text-orange-600 hover:bg-gray-50 rounded-md transition-colors duration-200">Контакты</a>
             </div>
         </div>
     </div>
@@ -38,7 +66,7 @@
         <div class="text-center">
             <h1 class="hero-title text-4xl md:text-6xl text-gray-900 mb-6">
                 Алюминиевые окна,<br>
-                <span class="hero-title-accent gradient-text">двери, витражи</span>
+                <span class="hero-title-accent gradient-text">двери, фасадные профили</span>
             </h1>
             <p class="text-xl text-gray-600 mb-8 max-w-3xl mx-auto leading-relaxed">
                 Крупнейший производитель алюминиевых систем высокого качества.
@@ -59,37 +87,11 @@
             <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Предлагаем</h2>
             <div class="w-20 h-1 mx-auto" style="background-color: var(--orange-primary);"></div>
         </div>
-    </div>
-</section>
-
-<!-- Extended Products Section -->
-<section class="py-20 bg-white">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <!-- First Row -->
-        <div class="grid md:grid-cols-3 gap-8 mb-12">
-            <div class="bg-white rounded-xl card-shadow transition-all duration-300 hover:transform hover:-translate-y-2 overflow-hidden">
-                <div class="h-48 bg-cover bg-center" style="background-image: url('images/fasad_osteklenye.jpg')"></div>
-                <div class="p-6 text-center">
-                    <h3 class="text-lg font-semibold text-gray-900">Фасадное остекление</h3>
-                </div>
-            </div>
-
-            <div class="bg-white rounded-xl card-shadow transition-all duration-300 hover:transform hover:-translate-y-2 overflow-hidden">
-                <div class="h-48 bg-cover bg-center" style="background-image: url('images/zenitnye_fonari.jpg')"></div>
-                <div class="p-6 text-center">
-                    <h3 class="text-lg font-semibold text-gray-900">Зенитные фонари</h3>
-                </div>
-            </div>
-
-            <div class="bg-white rounded-xl card-shadow transition-all duration-300 hover:transform hover:-translate-y-2 overflow-hidden">
-                <div class="h-48 bg-cover bg-center" style="background-image: url('images/allumin_balkon.jpg')"></div>
-                <div class="p-6 text-center">
-                    <h3 class="text-lg font-semibold text-gray-900">Балконы</h3>
-                </div>
-            </div>
+        
+        <!-- Categories Grid -->
+        <div id="services-grid" class="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+            <!-- Categories will be loaded here -->
         </div>
-
-        <!-- Second Row -->
     </div>
 </section>
 
@@ -136,9 +138,9 @@
                 <div class="w-16 h-16 rounded-lg flex items-center justify-center mx-auto mb-6" style="background-color: var(--orange-lighter);">
                     <i data-lucide="truck" class="w-8 h-8" style="color: var(--orange-primary);"></i>
                 </div>
-                <h3 class="text-lg font-semibold text-gray-900 mb-4 text-center">Бесплатная доставка</h3>
+                <h3 class="text-lg font-semibold text-gray-900 mb-4 text-center">Доставка</h3>
                 <p class="text-gray-600 text-sm leading-relaxed text-center">
-                    Доставка и установка входит в стоимость, указанную в договоре
+                    Доставка только по городу Бишкек
                 </p>
             </div>
         </div>
@@ -362,6 +364,76 @@
     </div>
 </section>
 
+<!-- Partners Section -->
+<section class="py-20 bg-white" id="partners">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-16">
+            <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Наши <span style="color: var(--orange-primary);">партнеры</span></h2>
+            <div class="w-20 h-1 mx-auto" style="background-color: var(--orange-primary);"></div>
+            <p class="text-gray-600 mt-6 max-w-3xl mx-auto">
+                Мы работаем с лучшими поставщиками и подрядчиками для обеспечения высочайшего качества продукции
+            </p>
+        </div>
+        
+        <!-- Partners Slider -->
+        <div class="partners-slider-container overflow-hidden">
+            <div class="partners-slider flex items-center space-x-12">
+                <!-- Placeholder partner logos - replace with actual logos -->
+                <div class="partner-logo flex-shrink-0">
+                    <img src="https://via.placeholder.com/150x80?text=Partner+1" alt="Partner 1" class="h-16 object-contain opacity-60 hover:opacity-100 transition-opacity duration-300">
+                </div>
+                <div class="partner-logo flex-shrink-0">
+                    <img src="https://via.placeholder.com/150x80?text=Partner+2" alt="Partner 2" class="h-16 object-contain opacity-60 hover:opacity-100 transition-opacity duration-300">
+                </div>
+                <div class="partner-logo flex-shrink-0">
+                    <img src="https://via.placeholder.com/150x80?text=Partner+3" alt="Partner 3" class="h-16 object-contain opacity-60 hover:opacity-100 transition-opacity duration-300">
+                </div>
+                <div class="partner-logo flex-shrink-0">
+                    <img src="https://via.placeholder.com/150x80?text=Partner+4" alt="Partner 4" class="h-16 object-contain opacity-60 hover:opacity-100 transition-opacity duration-300">
+                </div>
+                <div class="partner-logo flex-shrink-0">
+                    <img src="https://via.placeholder.com/150x80?text=Partner+5" alt="Partner 5" class="h-16 object-contain opacity-60 hover:opacity-100 transition-opacity duration-300">
+                </div>
+                <div class="partner-logo flex-shrink-0">
+                    <img src="https://via.placeholder.com/150x80?text=Partner+6" alt="Partner 6" class="h-16 object-contain opacity-60 hover:opacity-100 transition-opacity duration-300">
+                </div>
+                <div class="partner-logo flex-shrink-0">
+                    <img src="https://via.placeholder.com/150x80?text=Partner+7" alt="Partner 7" class="h-16 object-contain opacity-60 hover:opacity-100 transition-opacity duration-300">
+                </div>
+                <div class="partner-logo flex-shrink-0">
+                    <img src="https://via.placeholder.com/150x80?text=Partner+8" alt="Partner 8" class="h-16 object-contain opacity-60 hover:opacity-100 transition-opacity duration-300">
+                </div>
+                
+                <!-- Duplicate for infinite scroll effect -->
+                <div class="partner-logo flex-shrink-0">
+                    <img src="https://via.placeholder.com/150x80?text=Partner+1" alt="Partner 1" class="h-16 object-contain opacity-60 hover:opacity-100 transition-opacity duration-300">
+                </div>
+                <div class="partner-logo flex-shrink-0">
+                    <img src="https://via.placeholder.com/150x80?text=Partner+2" alt="Partner 2" class="h-16 object-contain opacity-60 hover:opacity-100 transition-opacity duration-300">
+                </div>
+                <div class="partner-logo flex-shrink-0">
+                    <img src="https://via.placeholder.com/150x80?text=Partner+3" alt="Partner 3" class="h-16 object-contain opacity-60 hover:opacity-100 transition-opacity duration-300">
+                </div>
+                <div class="partner-logo flex-shrink-0">
+                    <img src="https://via.placeholder.com/150x80?text=Partner+4" alt="Partner 4" class="h-16 object-contain opacity-60 hover:opacity-100 transition-opacity duration-300">
+                </div>
+                <div class="partner-logo flex-shrink-0">
+                    <img src="https://via.placeholder.com/150x80?text=Partner+5" alt="Partner 5" class="h-16 object-contain opacity-60 hover:opacity-100 transition-opacity duration-300">
+                </div>
+                <div class="partner-logo flex-shrink-0">
+                    <img src="https://via.placeholder.com/150x80?text=Partner+6" alt="Partner 6" class="h-16 object-contain opacity-60 hover:opacity-100 transition-opacity duration-300">
+                </div>
+                <div class="partner-logo flex-shrink-0">
+                    <img src="https://via.placeholder.com/150x80?text=Partner+7" alt="Partner 7" class="h-16 object-contain opacity-60 hover:opacity-100 transition-opacity duration-300">
+                </div>
+                <div class="partner-logo flex-shrink-0">
+                    <img src="https://via.placeholder.com/150x80?text=Partner+8" alt="Partner 8" class="h-16 object-contain opacity-60 hover:opacity-100 transition-opacity duration-300">
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
 <!-- Footer -->
 <footer class="bg-gray-900 text-white py-16" id="contact">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -399,8 +471,9 @@
                 <div class="space-y-2 text-gray-300">
                     <div><a href="#products" class="hover:text-white transition-colors">Алюминиевые окна</a></div>
                     <div><a href="#products" class="hover:text-white transition-colors">Алюминиевые двери</a></div>
-                    <div><a href="#products" class="hover:text-white transition-colors">Витражи и фасады</a></div>
+                    <div><a href="#products" class="hover:text-white transition-colors">Фасадные профили</a></div>
                     <div><a href="#products" class="hover:text-white transition-colors">Раздвижные системы</a></div>
+                    <div><a href="#partners" class="hover:text-white transition-colors">Партнеры</a></div>
                 </div>
             </div>
 

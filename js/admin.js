@@ -4,6 +4,7 @@ class AdminPanelManager {
         this.products = [];
         this.filteredProducts = [];
         this.contacts = {};
+        this.partners = [];
         this.currentTab = 'services';
         this.currentUser = null;
         this.init();
@@ -14,7 +15,7 @@ class AdminPanelManager {
         firebaseManager.onAuthStateChanged((user) => {
             this.handleAuthStateChange(user);
         });
-        
+
         this.setupEventListeners();
         this.setupTabs();
         lucide.createIcons();
@@ -54,7 +55,7 @@ class AdminPanelManager {
             // Test connection by trying to read from database
             await firebaseManager.getServices();
             this.updateConnectionStatus('connected', 'Подключено');
-            
+
             // Initialize default data if needed
             await firebaseManager.initializeDefaultData();
         } catch (error) {
@@ -68,7 +69,7 @@ class AdminPanelManager {
         const statusElement = document.getElementById('connection-status');
         const dot = statusElement.querySelector('.w-2');
         const textElement = statusElement.querySelector('span');
-        
+
         dot.className = 'w-2 h-2 rounded-full';
         switch (status) {
             case 'connected':
@@ -80,32 +81,35 @@ class AdminPanelManager {
             default:
                 dot.classList.add('bg-yellow-400');
         }
-        
+
         textElement.textContent = text;
     }
 
     async loadData() {
         try {
             this.showLoading(true);
-            
-            // Load services and products simultaneously
-            const [services, products] = await Promise.all([
+
+            // Load services, products and partners simultaneously
+            const [services, products, partners] = await Promise.all([
                 firebaseManager.getServices(),
-                firebaseManager.getProducts()
+                firebaseManager.getProducts(),
+                firebaseManager.getPartners()
             ]);
-            
+
             this.services = services;
             this.products = products;
+            this.partners = partners;
             this.filteredProducts = [...this.products];
-            
-            // Render everything after both are loaded
+
+            // Render everything after all are loaded
             this.renderServices();
             this.renderProducts();
+            this.renderPartners();
             this.populateCategoryFilter();
-            
+
             // Load contacts
             await this.loadContactsData();
-            
+
             this.showLoading(false);
         } catch (error) {
             console.error('Error loading data:', error);
@@ -134,7 +138,7 @@ class AdminPanelManager {
 
     setupTabs() {
         const tabButtons = document.querySelectorAll('.tab-button');
-        
+
         tabButtons.forEach(button => {
             button.addEventListener('click', () => {
                 // Remove active class from all tabs
@@ -142,15 +146,15 @@ class AdminPanelManager {
                     btn.classList.remove('active', 'border-orange-500', 'text-orange-600');
                     btn.classList.add('border-transparent', 'text-gray-500');
                 });
-                
+
                 // Add active class to clicked tab
                 button.classList.remove('border-transparent', 'text-gray-500');
                 button.classList.add('active', 'border-orange-500', 'text-orange-600');
-                
+
                 // Show/hide content
                 const tabContents = document.querySelectorAll('.tab-content');
                 tabContents.forEach(content => content.classList.add('hidden'));
-                
+
                 if (button.id === 'services-tab') {
                     document.getElementById('services-section').classList.remove('hidden');
                     this.currentTab = 'services';
@@ -160,6 +164,9 @@ class AdminPanelManager {
                 } else if (button.id === 'contacts-tab') {
                     document.getElementById('contacts-section').classList.remove('hidden');
                     this.currentTab = 'contacts';
+                } else if (button.id === 'partners-tab') {
+                    document.getElementById('partners-section').classList.remove('hidden');
+                    this.currentTab = 'partners';
                 }
             });
         });
@@ -193,6 +200,11 @@ class AdminPanelManager {
         // Add product button
         document.getElementById('add-product-btn').addEventListener('click', () => {
             this.showProductModal();
+        });
+
+        // Add partner button
+        document.getElementById('add-partner-btn').addEventListener('click', () => {
+            this.showPartnerModal();
         });
 
         // Contacts form
@@ -261,7 +273,7 @@ class AdminPanelManager {
 
     renderServices() {
         const container = document.getElementById('services-list');
-        
+
         if (this.services.length === 0) {
             container.innerHTML = `
                 <div class="text-center py-8 text-gray-500">
@@ -313,7 +325,7 @@ class AdminPanelManager {
 
     renderProducts() {
         const container = document.getElementById('products-list');
-        
+
         if (this.filteredProducts.length === 0) {
             container.innerHTML = `
                 <div class="text-center py-8 text-gray-500">
@@ -357,10 +369,10 @@ class AdminPanelManager {
     populateCategoryFilter() {
         const select = document.getElementById('category-filter');
         const currentValue = select.value;
-        
+
         select.innerHTML = '<option value="">Все категории</option>' +
             this.services.map(service => `<option value="${service.id}">${service.name}</option>`).join('');
-        
+
         select.value = currentValue;
     }
 
@@ -403,7 +415,7 @@ class AdminPanelManager {
                                 </button>
                             </div>
                             <div class="text-sm text-gray-500">Или введите URL изображения:</div>
-                            <input type="url" name="imageUrl" value="${service ? service.image : ''}" 
+                            <input type="text" name="imageUrl" value="${service ? service.image : ''}" 
                                    placeholder="https://example.com/image.jpg"
                                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
                                    onchange="document.getElementById('service-preview').src=this.value">
@@ -443,14 +455,14 @@ class AdminPanelManager {
     previewImage(input, previewId) {
         if (input.files && input.files[0]) {
             const file = input.files[0];
-            
+
             // Use image uploader's preview method
             imageUploader.createPreview(file, previewId);
-            
+
             // Show upload method info
             const uploadInfo = imageUploader.getUploadInfo(file.size);
             const infoElement = input.parentElement.parentElement.querySelector('.upload-info');
-            
+
             if (infoElement) {
                 infoElement.innerHTML = `
                     <div class="text-xs text-${uploadInfo.color}-600 mt-1 flex items-center space-x-1">
@@ -511,7 +523,7 @@ class AdminPanelManager {
                                 </button>
                             </div>
                             <div class="text-sm text-gray-500">Или введите URL изображения:</div>
-                            <input type="url" name="imageUrl" value="${product ? product.image : ''}" 
+                            <input type="text" name="imageUrl" value="${product ? product.image : ''}" 
                                    placeholder="https://example.com/image.jpg"
                                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
                                    onchange="document.getElementById('product-preview').src=this.value">
@@ -592,7 +604,7 @@ class AdminPanelManager {
                 image: imageUrl,
                 description: formData.get('description')
             };
-            
+
             if (existingService) {
                 await firebaseManager.updateService(existingService.id, serviceData);
                 this.showSuccess('Категория успешно обновлена');
@@ -600,10 +612,10 @@ class AdminPanelManager {
                 await firebaseManager.addService(serviceData);
                 this.showSuccess('Категория успешно добавлена');
             }
-            
+
             await this.loadData();
             document.querySelector('.modal-overlay').remove();
-            
+
         } catch (error) {
             console.error('Error saving service:', error);
             this.showError(error.message || 'Ошибка при сохранении категории');
@@ -637,7 +649,7 @@ class AdminPanelManager {
                     throw new Error('Ошибка при загрузке изображения: ' + uploadError.message);
                 }
             }
-        
+
             const productData = {
                 categoryId: categoryId,
                 categoryName: category.name,
@@ -649,7 +661,7 @@ class AdminPanelManager {
                 features: formData.get('features').split('\n').filter(f => f.trim()),
                 inStock: formData.has('inStock')
             };
-            
+
             if (existingProduct) {
                 const updatedProduct = await firebaseManager.updateProduct(existingProduct.id, productData);
                 // Update local data
@@ -666,13 +678,13 @@ class AdminPanelManager {
                 this.filteredProducts = [...this.products];
                 this.showSuccess('Товар успешно добавлен');
             }
-            
+
             // Re-render only what's needed
             this.renderProducts();
             this.updateProductCounts();
             this.populateCategoryFilter();
             document.querySelector('.modal-overlay').remove();
-            
+
         } catch (error) {
             console.error('Error saving product:', error);
             this.showError(error.message || 'Ошибка при сохранении товара');
@@ -699,11 +711,11 @@ class AdminPanelManager {
     async deleteService(serviceId) {
         const service = this.services.find(s => s.id === serviceId);
         const productCount = this.products.filter(p => p.categoryId === serviceId).length;
-        
-        const confirmMessage = productCount > 0 
+
+        const confirmMessage = productCount > 0
             ? `Вы уверены, что хотите удалить категорию "${service.name}"? Это также удалит ${productCount} товаров в этой категории.`
             : `Вы уверены, что хотите удалить категорию "${service.name}"?`;
-            
+
         if (confirm(confirmMessage)) {
             try {
                 this.showLoading(true);
@@ -725,16 +737,16 @@ class AdminPanelManager {
             try {
                 this.showLoading(true);
                 await firebaseManager.deleteProduct(productId);
-                
+
                 // Remove from local data
                 this.products = this.products.filter(p => p.id !== productId);
                 this.filteredProducts = this.filteredProducts.filter(p => p.id !== productId);
-                
+
                 // Re-render only what's needed
                 this.renderProducts();
                 this.updateProductCounts();
                 this.populateCategoryFilter();
-                
+
                 this.showSuccess('Товар успешно удален');
             } catch (error) {
                 console.error('Error deleting product:', error);
@@ -756,9 +768,9 @@ class AdminPanelManager {
                 ${content}
             </div>
         `;
-        
+
         document.body.appendChild(modal);
-        
+
         if (callback) callback();
 
         // Remove the click outside to close functionality
@@ -778,7 +790,7 @@ class AdminPanelManager {
     showNotification(message, type = 'info') {
         const notification = document.createElement('div');
         notification.className = `fixed top-4 right-4 z-50 px-4 py-3 rounded-lg text-white text-sm transition-all duration-300 transform translate-x-full`;
-        
+
         switch (type) {
             case 'success':
                 notification.classList.add('bg-green-600');
@@ -789,13 +801,13 @@ class AdminPanelManager {
             default:
                 notification.classList.add('bg-blue-600');
         }
-        
+
         notification.textContent = message;
         document.body.appendChild(notification);
-        
+
         // Animate in
         setTimeout(() => notification.classList.remove('translate-x-full'), 100);
-        
+
         // Animate out and remove
         setTimeout(() => {
             notification.classList.add('translate-x-full');
@@ -813,13 +825,13 @@ class AdminPanelManager {
                 address: 'г. Бишкек, ул. Примерная, 123',
                 hours: 'Пн-Пт: 9:00-18:00, Сб: 10:00-16:00'
             };
-            
+
             // Fill form with current data
             document.getElementById('contact-phone').value = this.contacts.phone || '';
             document.getElementById('contact-email').value = this.contacts.email || '';
             document.getElementById('contact-address').value = this.contacts.address || '';
             document.getElementById('contact-hours').value = this.contacts.hours || '';
-            
+
         } catch (error) {
             console.error('Error loading contacts:', error);
             this.showNotification('Ошибка загрузки контактных данных', 'error');
@@ -857,6 +869,200 @@ class AdminPanelManager {
                 this.showNotification('Недостаточно прав для сохранения данных. Проверьте настройки Firestore Rules.', 'error');
             } else {
                 this.showNotification('Ошибка сохранения контактных данных', 'error');
+            }
+        }
+    }
+
+    // Partners management methods
+    renderPartners() {
+        const container = document.getElementById('partners-list');
+
+        if (this.partners.length === 0) {
+            container.innerHTML = `
+                <div class="text-center py-8 text-gray-500">
+                    <i data-lucide="handshake" class="w-12 h-12 mx-auto mb-4 text-gray-300"></i>
+                    <p>Партнеры не найдены</p>
+                </div>
+            `;
+            return;
+        }
+
+        container.innerHTML = this.partners.map(partner => `
+            <div class="border border-gray-200 rounded-lg p-4 hover:border-orange-300 transition-colors duration-200">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center space-x-4">
+                        <img src="${partner.logo}" alt="${partner.name}" class="w-16 h-16 object-contain rounded-lg" onerror="this.src='https://via.placeholder.com/64x64?text=No+Logo'">
+                        <div>
+                            <h3 class="font-semibold text-gray-900">${partner.name}</h3>
+                            <p class="text-sm text-gray-600 mt-1">${partner.description || 'Наш партнер'}</p>
+                            <span class="text-xs text-gray-500">Порядок: ${partner.order || 0}</span>
+                        </div>
+                    </div>
+                    <div class="flex space-x-2">
+                        <button onclick="adminManager.editPartner('${partner.id}')" class="text-blue-600 hover:text-blue-700 p-2 rounded-lg hover:bg-blue-50 transition-colors duration-200">
+                            <i data-lucide="edit" class="w-4 h-4"></i>
+                        </button>
+                        <button onclick="adminManager.deletePartner('${partner.id}')" class="text-red-600 hover:text-red-700 p-2 rounded-lg hover:bg-red-50 transition-colors duration-200">
+                            <i data-lucide="trash-2" class="w-4 h-4"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `).join('');
+
+        lucide.createIcons();
+    }
+
+    showPartnerModal(partner = null) {
+        const isEdit = !!partner;
+        this.showModal(`
+            <div class="p-6">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-lg font-semibold text-gray-900">${isEdit ? 'Редактировать партнера' : 'Добавить партнера'}</h3>
+                    <button onclick="this.closest('.modal-overlay').remove()" class="text-gray-400 hover:text-gray-600 p-1 rounded-lg hover:bg-gray-100 transition-colors duration-200">
+                        <i data-lucide="x" class="w-5 h-5"></i>
+                    </button>
+                </div>
+                <form id="partner-form" class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Название партнера</label>
+                        <input type="text" name="name" value="${partner ? partner.name : ''}" required 
+                               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500">
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Логотип</label>
+                        <div class="space-y-3">
+                            <div class="flex space-x-3">
+                                <input type="file" name="logoFile" accept="image/*" 
+                                       class="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
+                                       onchange="adminManager.previewImage(this, 'partner-preview')">
+                                <button type="button" onclick="document.querySelector('input[name=logoFile]').value=''; document.getElementById('partner-preview').src=''" 
+                                        class="px-3 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors duration-200">
+                                    Очистить
+                                </button>
+                            </div>
+                            <div class="text-sm text-gray-500">Или введите URL логотипа:</div>
+                            <input type="text" name="logoUrl" value="${partner ? partner.logo : ''}" 
+                                   placeholder="https://example.com/logo.jpg"
+                                   class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
+                                   onchange="document.getElementById('partner-preview').src=this.value">
+                            <div class="mt-2">
+                                <img id="partner-preview" src="${partner ? partner.logo : ''}" alt="Preview" 
+                                     class="max-w-full h-24 object-contain rounded-lg ${partner ? '' : 'hidden'}" 
+                                     onload="this.classList.remove('hidden')" onerror="this.classList.add('hidden')">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Описание (необязательно)</label>
+                        <input type="text" name="description" value="${partner ? partner.description || '' : ''}"
+                               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
+                               placeholder="Краткое описание партнера">
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Порядок отображения</label>
+                        <input type="number" name="order" value="${partner ? partner.order || 0 : 0}" min="0"
+                               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500">
+                    </div>
+                    
+                    <div class="flex space-x-3 pt-4">
+                        <button type="submit" class="bg-orange-600 hover:bg-orange-700 text-white px-4 py-2 rounded-lg transition-colors duration-200 flex items-center space-x-2">
+                            <span id="partner-submit-text">${isEdit ? 'Сохранить' : 'Добавить'}</span>
+                            <div id="partner-submit-loading" class="hidden animate-spin w-4 h-4 border-2 border-white border-t-transparent rounded-full"></div>
+                        </button>
+                        <button type="button" onclick="this.closest('.modal-overlay').remove()" 
+                                class="bg-gray-300 hover:bg-gray-400 text-gray-700 px-4 py-2 rounded-lg transition-colors duration-200">
+                            Отмена
+                        </button>
+                    </div>
+                </form>
+            </div>
+        `, () => {
+            document.getElementById('partner-form').onsubmit = async (e) => {
+                e.preventDefault();
+                await this.handlePartnerSubmit(e, partner);
+            };
+        });
+    }
+
+    async handlePartnerSubmit(e, existingPartner) {
+        const formData = new FormData(e.target);
+        const submitBtn = document.getElementById('partner-submit-text');
+        const submitLoading = document.getElementById('partner-submit-loading');
+
+        try {
+            submitBtn.style.display = 'none';
+            submitLoading.classList.remove('hidden');
+
+            let logoUrl = formData.get('logoUrl');
+            const logoFile = formData.get('logoFile');
+
+            // Upload new logo if file is selected
+            if (logoFile && logoFile.size > 0) {
+                try {
+                    logoUrl = await imageUploader.uploadImage(logoFile);
+                    console.log('Partner logo uploaded successfully');
+                } catch (uploadError) {
+                    console.error('Error uploading logo:', uploadError);
+                    throw new Error('Ошибка при загрузке логотипа: ' + uploadError.message);
+                }
+            }
+
+            // Validate logo URL
+            if (!logoUrl) {
+                throw new Error('Необходимо выбрать логотип или указать URL');
+            }
+
+            const partnerData = {
+                name: formData.get('name'),
+                logo: logoUrl,
+                description: formData.get('description') || '',
+                order: parseInt(formData.get('order')) || 0
+            };
+
+            if (existingPartner) {
+                await firebaseManager.updatePartner(existingPartner.id, partnerData);
+                this.showSuccess('Партнер успешно обновлен');
+            } else {
+                await firebaseManager.addPartner(partnerData);
+                this.showSuccess('Партнер успешно добавлен');
+            }
+
+            await this.loadData();
+            document.querySelector('.modal-overlay').remove();
+
+        } catch (error) {
+            console.error('Error saving partner:', error);
+            this.showError(error.message || 'Ошибка при сохранении партнера');
+        } finally {
+            submitBtn.style.display = 'inline';
+            submitLoading.classList.add('hidden');
+        }
+    }
+
+    async editPartner(partnerId) {
+        const partner = this.partners.find(p => p.id === partnerId);
+        if (partner) {
+            this.showPartnerModal(partner);
+        }
+    }
+
+    async deletePartner(partnerId) {
+        const partner = this.partners.find(p => p.id === partnerId);
+        if (confirm(`Вы уверены, что хотите удалить партнера "${partner.name}"?`)) {
+            try {
+                this.showLoading(true);
+                await firebaseManager.deletePartner(partnerId);
+                this.showSuccess('Партнер успешно удален');
+                await this.loadData();
+            } catch (error) {
+                console.error('Error deleting partner:', error);
+                this.showError('Ошибка при удалении партнера');
+            } finally {
+                this.showLoading(false);
             }
         }
     }

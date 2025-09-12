@@ -31,6 +31,7 @@ class FirebaseManager {
     constructor() {
         this.servicesCollection = db.collection('services');
         this.productsCollection = db.collection('products');
+        this.partnersCollection = db.collection('partners');
         this.contactsDoc = db.collection('settings').doc('contacts');
     }
 
@@ -146,7 +147,7 @@ class FirebaseManager {
             if (services.length === 0) {
                 const defaultServices = this.getDefaultServices();
                 const batch = db.batch();
-                
+
                 defaultServices.forEach((service, index) => {
                     const docRef = this.servicesCollection.doc();
                     batch.set(docRef, {
@@ -156,10 +157,10 @@ class FirebaseManager {
                         updatedAt: firebase.firestore.FieldValue.serverTimestamp()
                     });
                 });
-                
+
                 await batch.commit();
                 console.log('Default services initialized');
-                
+
                 // Initialize default products for each service
                 await this.initializeDefaultProducts();
             }
@@ -172,7 +173,7 @@ class FirebaseManager {
         try {
             const services = await this.getServices();
             const batch = db.batch();
-            
+
             services.forEach(service => {
                 const defaultProducts = [
                     {
@@ -219,7 +220,7 @@ class FirebaseManager {
                     });
                 });
             });
-            
+
             await batch.commit();
             console.log('Default products initialized');
         } catch (error) {
@@ -270,7 +271,7 @@ class FirebaseManager {
             const canvas = document.createElement('canvas');
             const ctx = canvas.getContext('2d');
             const img = new Image();
-            
+
             img.onload = () => {
                 // Calculate new dimensions
                 let { width, height } = img;
@@ -278,22 +279,22 @@ class FirebaseManager {
                     height = (height * maxWidth) / width;
                     width = maxWidth;
                 }
-                
+
                 canvas.width = width;
                 canvas.height = height;
-                
+
                 // Draw and compress
                 ctx.drawImage(img, 0, 0, width, height);
                 canvas.toBlob(resolve, file.type, quality);
             };
-            
+
             img.src = URL.createObjectURL(file);
         });
     }
 
     async uploadToImgur(file) {
         const IMGUR_CLIENT_ID = 'YOUR_IMGUR_CLIENT_ID'; // Замените на ваш Client ID
-        
+
         if (IMGUR_CLIENT_ID === 'YOUR_IMGUR_CLIENT_ID') {
             throw new Error('Imgur Client ID не настроен');
         }
@@ -353,7 +354,7 @@ class FirebaseManager {
         if (imageUrl && imageUrl.startsWith('data:')) {
             return true;
         }
-        
+
         // For external services, deletion might not be possible or needed
         return true;
     }
@@ -390,6 +391,54 @@ class FirebaseManager {
             return () => {};
         }
         return auth.onAuthStateChanged(callback);
+    }
+
+    // Partners CRUD operations
+    async getPartners() {
+        try {
+            const snapshot = await this.partnersCollection.orderBy('order', 'asc').get();
+            return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        } catch (error) {
+            console.error('Error getting partners:', error);
+            return [];
+        }
+    }
+
+    async addPartner(partnerData) {
+        try {
+            const docRef = await this.partnersCollection.add({
+                ...partnerData,
+                createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+            });
+            return { id: docRef.id, ...partnerData };
+        } catch (error) {
+            console.error('Error adding partner:', error);
+            throw error;
+        }
+    }
+
+    async updatePartner(partnerId, partnerData) {
+        try {
+            await this.partnersCollection.doc(partnerId).update({
+                ...partnerData,
+                updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+            });
+            return { id: partnerId, ...partnerData };
+        } catch (error) {
+            console.error('Error updating partner:', error);
+            throw error;
+        }
+    }
+
+    async deletePartner(partnerId) {
+        try {
+            await this.partnersCollection.doc(partnerId).delete();
+            return true;
+        } catch (error) {
+            console.error('Error deleting partner:', error);
+            throw error;
+        }
     }
 
     // Contacts operations
@@ -447,7 +496,7 @@ class PublicContactsLoader {
         this.contactsDoc = db.collection('settings').doc('contacts');
         this.defaultContacts = {
             phone: '+996 (555) 555-555',
-            email: 'info@bishtrade.kz', 
+            email: 'info@bishtrade.kz',
             address: 'г. Бишкек, ул. Примерная, 123',
             hours: 'Пн-Пт: 9:00-18:00, Сб: 10:00-16:00'
         };
@@ -469,7 +518,7 @@ class PublicContactsLoader {
 
     async updateContactsInPage() {
         const contacts = await this.loadContacts();
-        
+
         // Update phone elements
         const phoneElements = document.querySelectorAll('[data-contact="phone"]');
         phoneElements.forEach(el => {
@@ -480,7 +529,7 @@ class PublicContactsLoader {
                 el.textContent = contacts.phone;
             }
         });
-        
+
         // Update email elements  
         const emailElements = document.querySelectorAll('[data-contact="email"]');
         emailElements.forEach(el => {
@@ -491,11 +540,11 @@ class PublicContactsLoader {
                 el.textContent = contacts.email;
             }
         });
-        
+
         // Update address elements
         const addressElements = document.querySelectorAll('[data-contact="address"]');
         addressElements.forEach(el => el.textContent = contacts.address);
-        
+
         // Update hours elements
         const hoursElements = document.querySelectorAll('[data-contact="hours"]');
         hoursElements.forEach(el => el.textContent = contacts.hours);

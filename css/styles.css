@@ -53,3 +53,51 @@ body {
     letter-spacing: 0.05em;
     text-transform: uppercase;
 }
+
+/* Partners Slider Styles */
+.partners-slider-container {
+    position: relative;
+    max-width: 100%;
+    margin: 0 auto;
+}
+
+.partners-slider {
+    animation: infiniteSlide 30s linear infinite;
+    width: max-content;
+}
+
+.partners-slider:hover {
+    animation-play-state: paused;
+}
+
+@keyframes infiniteSlide {
+    0% {
+        transform: translateX(0);
+    }
+    100% {
+        transform: translateX(-50%);
+    }
+}
+
+.partner-logo img {
+    filter: grayscale(100%);
+    transition: all 0.3s ease;
+    max-height: 64px;
+    width: auto;
+}
+
+.partner-logo img:hover {
+    filter: grayscale(0%);
+    opacity: 1 !important;
+    transform: scale(1.05);
+}
+
+@media (max-width: 768px) {
+    .partners-slider {
+        animation: infiniteSlide 20s linear infinite;
+    }
+    
+    .partner-logo img {
+        max-height: 48px;
+    }
+}
